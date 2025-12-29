@@ -6,8 +6,11 @@
             <h1 class="text-2xl font-black">Dashboard Penjual</h1>
             <p class="text-zinc-600">Kelola barang, order, status, dan chat.</p>
         </div>
-        <a href="{{ route('seller.products.create') }}" class="px-4 py-2 rounded-2xl bg-black text-white hover:opacity-90">+
-            Tambah Barang</a>
+
+        <a href="{{ route('seller.products.create') }}"
+           class="px-4 py-2 rounded-2xl bg-black text-white hover:opacity-90">
+            + Tambah Barang
+        </a>
     </div>
 
     <div class="mt-5 grid md:grid-cols-4 gap-4">
@@ -34,21 +37,32 @@
 
         <div class="rounded-3xl bg-white border border-zinc-200 shadow-soft p-4">
             <div class="font-bold">Shortcut</div>
+
             <div class="mt-3 grid sm:grid-cols-2 gap-2">
+                {{-- ✅ CRUD Barang --}}
                 <a href="{{ route('seller.products.index') }}"
-                    class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+                   class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
                     <div class="font-semibold">CRUD Barang</div>
                     <div class="text-xs text-zinc-500">Tambah/edit/hapus barang</div>
                 </a>
-                <a href="{{ route('chat') }}" class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+
+                {{-- ✅ Chat Seller (kalau route seller.chat ada) --}}
+                <a href="{{ route('seller.chat') }}"
+                   class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
                     <div class="font-semibold">Chat Pembeli</div>
                     <div class="text-xs text-zinc-500">Balas lebih cepat</div>
                 </a>
-                <a href="{{ route('orders') }}" class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+
+                {{-- ✅ Tracking Status (Seller Orders) --}}
+                <a href="{{ route('seller.orders.index') }}"
+                   class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
                     <div class="font-semibold">Tracking Status</div>
                     <div class="text-xs text-zinc-500">Update resi & status</div>
                 </a>
-                <a href="{{ route('profile') }}" class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+
+                {{-- ✅ Profile (Breeze) --}}
+                <a href="{{ route('profile.edit') }}"
+                   class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
                     <div class="font-semibold">Profil & Rating</div>
                     <div class="text-xs text-zinc-500">Lihat feedback</div>
                 </a>
