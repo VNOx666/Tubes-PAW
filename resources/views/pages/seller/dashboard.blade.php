@@ -35,7 +35,7 @@
         <div class="rounded-3xl bg-white border border-zinc-200 shadow-soft p-4">
             <div class="font-bold">Shortcut</div>
             <div class="mt-3 grid sm:grid-cols-2 gap-2">
-                <a href="{{ route('seller.products') }}"
+                <a href="{{ route('seller.products.index') }}"
                     class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
                     <div class="font-semibold">CRUD Barang</div>
                     <div class="text-xs text-zinc-500">Tambah/edit/hapus barang</div>
