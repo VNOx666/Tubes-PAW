@@ -1,76 +1,75 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="<?php echo e(route('home')); ?>">
-            <span class="d-inline-flex align-items-center justify-content-center rounded bg-dark text-white"
-                  style="width:36px;height:36px;">T</span>
-            <span class="fw-bold">Thrifty</span>
-        </a>
+<nav class="bg-white border-b border-zinc-200">
+    <div class="container py-3">
+        <div class="flex items-center justify-between gap-3">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            
+            <a href="<?php echo e(route('home')); ?>" class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-zinc-900 text-white flex items-center justify-center font-black">
+                    T
+                </div>
+                <div class="font-black text-xl text-zinc-900">Thrifty</div>
+            </a>
 
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <?php if(auth()->guard()->guest()): ?>
-                    <li class="nav-item">
-                        <a class="nav-link <?php if(request()->routeIs('home')): ?> active <?php endif; ?>" href="<?php echo e(route('home')); ?>">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php if(request()->routeIs('shop')): ?> active <?php endif; ?>" href="<?php echo e(route('shop')); ?>">Shop</a>
-                    </li>
-                <?php endif; ?>
+            
+            <div class="flex items-center gap-3">
 
+                
+                <form action="<?php echo e(route('shop')); ?>" method="GET" class="relative hidden sm:block">
+                    <input
+                        type="text"
+                        name="q"
+                        value="<?php echo e(request('q')); ?>"
+                        placeholder="Search..."
+                        class="w-[260px] rounded-xl border border-zinc-200 bg-white
+                               pl-10 pr-14 py-2 text-sm shadow-sm
+                               focus:outline-none focus:ring-2 focus:ring-zinc-200"
+                    >
+
+                    
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">
+                        🔍
+                    </span>
+
+                    
+                    <span
+                        class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2
+                               rounded-md border border-zinc-200 bg-zinc-50
+                               px-2 py-0.5 text-[10px] text-zinc-500">
+                        Ctrl K
+                    </span>
+                </form>
+
+                
                 <?php if(auth()->guard()->check()): ?>
-                    <li class="nav-item">
-                        <a class="nav-link <?php if(request()->routeIs('dashboard')): ?> active <?php endif; ?>"
-                           href="<?php echo e(route('dashboard')); ?>">Dashboard</a>
-                    </li>
+                    
+                    <?php if(auth()->user()->role === 'seller'): ?>
+                        <a href="<?php echo e(route('seller.profile', auth()->user()->id)); ?>"
+                           class="h-10 w-10 flex items-center justify-center rounded-full
+                                  border border-zinc-200 bg-white font-semibold shadow-sm
+                                  hover:bg-zinc-50">
+                            <?php echo e(strtoupper(substr(auth()->user()->name, 0, 1))); ?>
 
-                    <?php if(auth()->user()->role === 'buyer'): ?>
-                        <li class="nav-item"><a class="nav-link <?php if(request()->routeIs('shop')): ?> active <?php endif; ?>" href="<?php echo e(route('shop')); ?>">Shop</a></li>
-                        <li class="nav-item"><a class="nav-link <?php if(request()->routeIs('cart*')): ?> active <?php endif; ?>" href="<?php echo e(route('cart')); ?>">Keranjang</a></li>
-                        <li class="nav-item"><a class="nav-link <?php if(request()->routeIs('orders*')): ?> active <?php endif; ?>" href="<?php echo e(route('orders')); ?>">Pesanan</a></li>
-                        <li class="nav-item"><a class="nav-link <?php if(request()->routeIs('chat*')): ?> active <?php endif; ?>" href="<?php echo e(route('chat')); ?>">Chat</a></li>
+                        </a>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link <?php if(request()->routeIs('seller.dashboard')): ?> active <?php endif; ?>" href="<?php echo e(route('seller.dashboard')); ?>">Dashboard Seller</a></li>
-                        <li class="nav-item"><a class="nav-link <?php if(request()->routeIs('seller.products*')): ?> active <?php endif; ?>" href="<?php echo e(route('seller.products.index')); ?>">Produk</a></li>
-
                         
-                        <li class="nav-item"><a class="nav-link <?php if(request()->routeIs('seller.orders*')): ?> active <?php endif; ?>" href="<?php echo e(route('seller.orders.index')); ?>">Orders</a></li>
+                        <a href="<?php echo e(route('profile.edit')); ?>"
+                           class="h-10 w-10 flex items-center justify-center rounded-full
+                                  border border-zinc-200 bg-white font-semibold shadow-sm
+                                  hover:bg-zinc-50">
+                            <?php echo e(strtoupper(substr(auth()->user()->name, 0, 1))); ?>
 
-                        <li class="nav-item"><a class="nav-link <?php if(request()->routeIs('seller.chat*')): ?> active <?php endif; ?>" href="<?php echo e(route('seller.chat')); ?>">Chat</a></li>
+                        </a>
                     <?php endif; ?>
+                <?php else: ?>
+                    
+                    <a href="<?php echo e(route('login')); ?>"
+                       class="px-4 py-2 rounded-xl border border-zinc-200 bg-white
+                              text-sm hover:bg-zinc-50">
+                        Login
+                    </a>
                 <?php endif; ?>
-            </ul>
 
-            <div class="d-flex align-items-center gap-2">
-                <?php if(auth()->guard()->guest()): ?>
-                    <a class="btn btn-outline-secondary btn-sm" href="<?php echo e(route('login')); ?>">Login</a>
-                    <a class="btn btn-dark btn-sm" href="<?php echo e(route('register')); ?>">Register</a>
-                <?php endif; ?>
-
-                <?php if(auth()->guard()->check()): ?>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            <?php echo e(auth()->user()->name); ?>
-
-                        </button>
-
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>">Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="<?php echo e(route('logout')); ?>">
-                                    <?php echo csrf_field(); ?>
-                                    <button type="submit" class="dropdown-item text-danger">Log Out</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
     </div>

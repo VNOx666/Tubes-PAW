@@ -18,12 +18,12 @@
                     <div>
                         <label class="text-xs text-zinc-600">Min</label>
                         <input class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
-                            placeholder="50k" />
+                               placeholder="50k" />
                     </div>
                     <div>
                         <label class="text-xs text-zinc-600">Max</label>
                         <input class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
-                            placeholder="300k" />
+                               placeholder="300k" />
                     </div>
                 </div>
 
@@ -96,48 +96,42 @@
             </div>
 
             
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-4">
+            <div class="mt-6 grid grid-cols-3 gap-5">
                 <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <a href="<?php echo e(route('product', $product->slug)); ?>"
                         class="rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden hover:shadow-md transition">
 
-                        
                         <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center overflow-hidden">
                             <?php if($product->image): ?>
                                 <img src="<?php echo e(asset('storage/' . $product->image)); ?>"
-                                    class="w-full h-full object-cover" alt="<?php echo e($product->name); ?>">
+                                     class="w-full h-full object-cover"
+                                     alt="<?php echo e($product->name); ?>">
                             <?php else: ?>
                                 <span class="text-zinc-400">Foto Produk</span>
                             <?php endif; ?>
                         </div>
 
-                        
                         <div class="p-4">
                             <div class="flex items-center justify-between gap-2">
-                                <div class="font-bold line-clamp-1">
-                                    <?php echo e($product->name); ?>
+                                <div class="font-bold line-clamp-1"><?php echo e($product->name); ?></div>
 
-                                </div>
-
-                                
-                                <span
-                                    class="text-xs px-3 py-1 rounded-full <?php echo e($product->quantity > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'); ?>">
-                                    <?php echo e($product->quantity > 0 ? 'Ready' : 'Habis'); ?>
-
-                                </span>
+                                <?php if($product->quantity > 0): ?>
+                                    <span class="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                                        Ready
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-xs px-3 py-1 rounded-full bg-red-100 text-red-700">
+                                        Habis
+                                    </span>
+                                <?php endif; ?>
                             </div>
 
-                            <div class="text-sm text-zinc-600 mt-1">
+                            
+                            <div class="text-sm text-zinc-600 mt-1 line-clamp-1">
                                 <?php echo e($product->category ?? 'Tanpa kategori'); ?>
 
-                                <?php if($product->grade): ?>
-                                    • Grade <?php echo e($product->grade); ?>
-
-                                <?php endif; ?>
-                                <?php if($product->size): ?>
-                                    • Size <?php echo e($product->size); ?>
-
-                                <?php endif; ?>
+                                <?php if($product->grade): ?> • Grade <?php echo e($product->grade); ?> <?php endif; ?>
+                                <?php if($product->size): ?> • Size <?php echo e($product->size); ?> <?php endif; ?>
                             </div>
 
                             <div class="mt-3 text-lg font-black">
@@ -145,7 +139,7 @@
 
                             </div>
 
-                            <div class="mt-2 text-sm text-zinc-600">
+                            <div class="mt-2 text-sm text-zinc-600 line-clamp-1">
                                 Seller: <?php echo e($product->seller->name ?? 'Seller'); ?>
 
                             </div>
