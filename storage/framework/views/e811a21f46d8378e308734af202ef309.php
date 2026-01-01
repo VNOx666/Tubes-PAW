@@ -1,44 +1,44 @@
-@extends('layouts.app', ['title' => ($product->name ?? 'Detail Produk') . ' — Thrifty'])
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {{-- LEFT: FOTO --}}
+        
         <div class="rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden">
             <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center overflow-hidden">
-                @if (!empty($product->image))
-                    <img src="{{ asset('storage/' . $product->image) }}"
+                <?php if(!empty($product->image)): ?>
+                    <img src="<?php echo e(asset('storage/' . $product->image)); ?>"
                         class="w-full h-full object-cover"
-                        alt="{{ $product->name }}">
-                @else
+                        alt="<?php echo e($product->name); ?>">
+                <?php else: ?>
                     <span class="text-zinc-400">Foto Produk</span>
-                @endif
+                <?php endif; ?>
             </div>
 
-            {{-- thumbnails (kalau kamu belum punya multiple image, biarin placeholder) --}}
+            
             <div class="p-4 flex gap-3">
-                @for ($i = 0; $i < 4; $i++)
+                <?php for($i = 0; $i < 4; $i++): ?>
                     <div class="h-16 w-16 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-xs text-zinc-400">
                         foto
                     </div>
-                @endfor
+                <?php endfor; ?>
             </div>
         </div>
 
-        {{-- RIGHT: INFO --}}
+        
         <div>
             <div class="flex items-start justify-between gap-3">
                 <div>
-                    <h1 class="text-3xl font-black">{{ $product->name }}</h1>
+                    <h1 class="text-3xl font-black"><?php echo e($product->name); ?></h1>
                     <p class="text-zinc-600 mt-1">
-                        {{ $product->category ?? 'Tanpa kategori' }}
-                        @if($product->grade) • Grade {{ $product->grade }} @endif
-                        @if($product->size) • Ukuran {{ $product->size }} @endif
+                        <?php echo e($product->category ?? 'Tanpa kategori'); ?>
+
+                        <?php if($product->grade): ?> • Grade <?php echo e($product->grade); ?> <?php endif; ?>
+                        <?php if($product->size): ?> • Ukuran <?php echo e($product->size); ?> <?php endif; ?>
                     </p>
                 </div>
 
                 <span class="text-xs px-3 py-1 rounded-full
-                    {{ $product->quantity > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-zinc-200 text-zinc-700' }}">
-                    {{ $product->quantity > 0 ? 'Ready' : 'Sold' }}
+                    <?php echo e($product->quantity > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-zinc-200 text-zinc-700'); ?>">
+                    <?php echo e($product->quantity > 0 ? 'Ready' : 'Sold'); ?>
+
                 </span>
             </div>
 
@@ -47,31 +47,32 @@
                     <div>
                         <div class="text-sm text-zinc-600">Harga</div>
                         <div class="text-3xl font-black">
-                            Rp {{ number_format((int) $product->price, 0, ',', '.') }}
+                            Rp <?php echo e(number_format((int) $product->price, 0, ',', '.')); ?>
+
                         </div>
                     </div>
 
                     <div class="text-right text-sm text-zinc-700">
-                        <div>Seller: <b>{{ $product->seller->name ?? 'Seller' }}</b></div>
+                        <div>Seller: <b><?php echo e($product->seller->name ?? 'Seller'); ?></b></div>
                     </div>
                 </div>
 
                 <div class="mt-4 flex flex-col sm:flex-row gap-3">
-                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1">
-                        @csrf
+                    <form action="<?php echo e(route('cart.add', $product->id)); ?>" method="POST" class="flex-1">
+                        <?php echo csrf_field(); ?>
                         <button type="submit"
                             class="w-full px-4 py-3 rounded-2xl bg-black text-white hover:opacity-90">
                             + Keranjang
                         </button>
                     </form>
 
-                    <a href="{{ route('checkout') }}"
+                    <a href="<?php echo e(route('checkout')); ?>"
                         class="flex-1 text-center px-4 py-3 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
                         Beli Sekarang
                     </a>
                 </div>
 
-                <a href="{{ route('chat') }}"
+                <a href="<?php echo e(route('chat')); ?>"
                     class="mt-3 block text-center px-4 py-3 rounded-2xl bg-zinc-900 text-white hover:opacity-90">
                     Chat Penjual
                 </a>
@@ -80,13 +81,17 @@
             <div class="mt-5 rounded-3xl bg-white border border-zinc-200 shadow-soft p-5">
                 <h3 class="font-black text-lg">Deskripsi</h3>
                 <div class="mt-2 text-zinc-700 leading-relaxed whitespace-pre-line">
-                    {{ $product->description ?: 'Tidak ada deskripsi.' }}
+                    <?php echo e($product->description ?: 'Tidak ada deskripsi.'); ?>
+
                 </div>
 
                 <div class="mt-4 text-sm text-zinc-600">
-                    Warna: {{ $product->color ?? '-' }} • Stok: {{ $product->quantity ?? 0 }}
+                    Warna: <?php echo e($product->color ?? '-'); ?> • Stok: <?php echo e($product->quantity ?? 0); ?>
+
                 </div>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => ($product->name ?? 'Detail Produk') . ' — Thrifty'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Tubes-PAW-1\resources\views/pages/product.blade.php ENDPATH**/ ?>
