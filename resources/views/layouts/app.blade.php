@@ -10,13 +10,18 @@
     {{-- Bootstrap CSS (CDN) --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    {{-- Vite (opsional). Kalau kamu tidak pakai npm/vite, boleh comment/hapus --}}
+    {{-- Tailwind/Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-light">
-    @include('layouts.navigation')
 
-    {{-- Header opsional (kalau kamu pakai @section('header')) --}}
+<body class="bg-light">
+    @if(request()->is('seller*'))
+    @include('layouts.seller-navigation')
+@else
+    @include('layouts.navigation')
+@endif
+
+
     @hasSection('header')
         <header class="bg-white border-bottom">
             <div class="container py-3">

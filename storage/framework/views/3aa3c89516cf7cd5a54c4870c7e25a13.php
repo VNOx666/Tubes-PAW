@@ -13,10 +13,15 @@
     
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 </head>
-<body class="bg-light">
-    <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-    
+<body class="bg-light">
+    <?php if(request()->is('seller*')): ?>
+    <?php echo $__env->make('layouts.seller-navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php else: ?>
+    <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php endif; ?>
+
+
     <?php if (! empty(trim($__env->yieldContent('header')))): ?>
         <header class="bg-white border-bottom">
             <div class="container py-3">

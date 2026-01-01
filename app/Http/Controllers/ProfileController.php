@@ -57,4 +57,21 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function switchRole()
+    {
+        $user = auth()->user();
+
+        $user->role = $user->role === 'seller' ? 'buyer' : 'seller';
+        $user->save();
+
+        // biar kalau role berubah langsung diarahkan sesuai mode
+        if ($user->role === 'seller') {
+            return redirect()->route('seller.dashboard');
+        }
+
+        // buyer
+        return redirect()->route('home');
+    }
 }
+

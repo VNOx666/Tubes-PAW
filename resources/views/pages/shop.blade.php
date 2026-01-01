@@ -20,12 +20,12 @@
                     <div>
                         <label class="text-xs text-zinc-600">Min</label>
                         <input class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
-                            placeholder="50k" />
+                               placeholder="50k" />
                     </div>
                     <div>
                         <label class="text-xs text-zinc-600">Max</label>
                         <input class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
-                            placeholder="300k" />
+                               placeholder="300k" />
                     </div>
                 </div>
 
@@ -74,9 +74,9 @@
                         <option>Rating Seller</option>
                     </select>
 
-                    {{-- Keranjang hanya untuk buyer (route cart ada di middleware buyer) --}}
+                    {{-- Keranjang hanya untuk buyer --}}
                     @auth
-                        @if (auth()->user()->role === 'buyer')
+                        @if(auth()->user()->role === 'buyer')
                             <a href="{{ route('cart') }}"
                                 class="px-4 py-2 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
                                 Keranjang
@@ -96,51 +96,49 @@
                 </div>
             </div>
 
-            {{-- GRID PRODUK (UKURAN PAS DENGAN SIDEBAR: LG=3 KOLUM, XL=4 KOLUM) --}}
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-4">
+            {{-- GRID PRODUK (UKURAN SAMA KAYAK HOME - NEW DROP) --}}
+            <div class="mt-6 grid grid-cols-3 gap-5">
                 @forelse ($products as $product)
                     <a href="{{ route('product', $product->slug) }}"
                         class="rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden hover:shadow-md transition">
 
-                        {{-- FOTO --}}
                         <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center overflow-hidden">
                             @if ($product->image)
                                 <img src="{{ asset('storage/' . $product->image) }}"
-                                    class="w-full h-full object-cover" alt="{{ $product->name }}">
+                                     class="w-full h-full object-cover"
+                                     alt="{{ $product->name }}">
                             @else
                                 <span class="text-zinc-400">Foto Produk</span>
                             @endif
                         </div>
 
-                        {{-- DESKRIPSI --}}
                         <div class="p-4">
                             <div class="flex items-center justify-between gap-2">
-                                <div class="font-bold line-clamp-1">
-                                    {{ $product->name }}
-                                </div>
+                                <div class="font-bold line-clamp-1">{{ $product->name }}</div>
 
-                                {{-- STATUS --}}
-                                <span
-                                    class="text-xs px-3 py-1 rounded-full {{ $product->quantity > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' }}">
-                                    {{ $product->quantity > 0 ? 'Ready' : 'Habis' }}
-                                </span>
+                                @if ($product->quantity > 0)
+                                    <span class="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                                        Ready
+                                    </span>
+                                @else
+                                    <span class="text-xs px-3 py-1 rounded-full bg-red-100 text-red-700">
+                                        Habis
+                                    </span>
+                                @endif
                             </div>
 
-                            <div class="text-sm text-zinc-600 mt-1">
+                            {{-- ini yang bikin “Size L” nggak turun baris: dibikin 1 baris pakai line-clamp-1 --}}
+                            <div class="text-sm text-zinc-600 mt-1 line-clamp-1">
                                 {{ $product->category ?? 'Tanpa kategori' }}
-                                @if ($product->grade)
-                                    • Grade {{ $product->grade }}
-                                @endif
-                                @if ($product->size)
-                                    • Size {{ $product->size }}
-                                @endif
+                                @if ($product->grade) • Grade {{ $product->grade }} @endif
+                                @if ($product->size) • Size {{ $product->size }} @endif
                             </div>
 
                             <div class="mt-3 text-lg font-black">
                                 Rp {{ number_format($product->price, 0, ',', '.') }}
                             </div>
 
-                            <div class="mt-2 text-sm text-zinc-600">
+                            <div class="mt-2 text-sm text-zinc-600 line-clamp-1">
                                 Seller: {{ $product->seller->name ?? 'Seller' }}
                             </div>
                         </div>
