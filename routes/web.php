@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublicProductController;
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -21,20 +23,19 @@ use App\Http\Controllers\SellerProfileController;
 | Public Pages (tanpa login)
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn () => view('pages.home'))->name('home');   // ✅ ini ganti welcome
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
-Route::get('/product/{slug}', fn (string $slug) => view('pages.product', compact('slug')))
-    ->name('product');
+// ✅ Detail product (public)
+Route::get('/product/{slug}', [PublicProductController::class, 'show'])->name('product');
 
-// Profil seller (public)
-Route::get('/seller/{user}', [SellerProfileController::class, 'show'])
-    ->name('seller.profile');
+// ✅ Profil seller (public)
+Route::get('/seller/{user}', [SellerProfileController::class, 'show'])->name('seller.profile');
 
 /*
 |--------------------------------------------------------------------------
-| Dashboard (bawaan Breeze) - kita arahkan sesuai role
+| Dashboard (Breeze) - arahkan sesuai role
 |--------------------------------------------------------------------------
 */
 Route::get('/dashboard', DashboardController::class)
@@ -73,7 +74,7 @@ Route::middleware(['auth', 'role:buyer'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.detail');
 
-    // Chat
+    // Chat buyer
     Route::get('/chat', [ChatController::class, 'index'])->name('chat');
     Route::get('/chat/order/{order}', [ChatController::class, 'showByOrder'])->name('chat.order');
     Route::get('/chat/{conversation}', [ChatController::class, 'show'])->name('chat.show');
@@ -93,17 +94,18 @@ Route::middleware(['auth', 'role:seller'])
     ->prefix('seller')
     ->name('seller.')
     ->group(function () {
-        Route::get('/', fn () => view('pages.seller.dashboard'))->name('dashboard');
 
-        // CRUD products
+        Route::get('/', fn() => view('pages.seller.dashboard'))->name('dashboard');
+
+        // ✅ products
         Route::resource('products', SellerProductController::class)->except(['show']);
 
-        // Seller Orders
+        // ✅ seller orders + tracking
         Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [SellerOrderController::class, 'show'])->name('orders.show');
         Route::patch('/orders/{order}/status', [SellerOrderController::class, 'updateStatus'])->name('orders.status');
 
-        // Chat seller (pakai controller yang sama)
+        // ✅ chat seller
         Route::get('/chat', [ChatController::class, 'index'])->name('chat');
         Route::get('/chat/{conversation}', [ChatController::class, 'show'])->name('chat.show');
         Route::post('/chat/{conversation}', [ChatController::class, 'send'])->name('chat.send');

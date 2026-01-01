@@ -50,6 +50,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     /**
      * Helper: cek apakah user role seller.
      */
