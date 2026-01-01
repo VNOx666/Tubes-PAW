@@ -96,62 +96,58 @@
             </div>
 
             
-            <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-4">
                 <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                    <?php
-                        $seller = $product->seller ?? null;
-                        $avg = $seller ? round($seller->averageRating(), 1) : 0;
-                        $cnt = $seller ? $seller->ratingCount() : 0;
-                    ?>
-
                     <a href="<?php echo e(route('product', $product->slug)); ?>"
-                        class="group rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden hover:-translate-y-0.5 transition">
-                        <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center text-zinc-400 overflow-hidden">
+                        class="rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden hover:shadow-md transition">
+
+                        
+                        <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center overflow-hidden">
                             <?php if($product->image): ?>
-                                <img src="<?php echo e(asset('storage/' . $product->image)); ?>" alt="<?php echo e($product->name); ?>"
-                                    class="h-full w-full object-cover" />
+                                <img src="<?php echo e(asset('storage/' . $product->image)); ?>"
+                                    class="w-full h-full object-cover" alt="<?php echo e($product->name); ?>">
                             <?php else: ?>
-                                <span class="text-sm">Foto Produk</span>
+                                <span class="text-zinc-400">Foto Produk</span>
                             <?php endif; ?>
                         </div>
 
+                        
                         <div class="p-4">
-                            <div class="flex items-start justify-between gap-2">
-                                <div>
-                                    <div class="font-bold group-hover:underline"><?php echo e($product->name); ?></div>
-                                    <div class="text-xs text-zinc-600">
-                                        <?php echo e($product->category ?? 'Unisex'); ?>
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="font-bold line-clamp-1">
+                                    <?php echo e($product->name); ?>
 
-                                        <?php if($product->grade): ?> • Grade <?php echo e($product->grade); ?> <?php endif; ?>
-                                        <?php if($product->size): ?> • Size <?php echo e($product->size); ?> <?php endif; ?>
-                                    </div>
                                 </div>
 
-                                <?php if($product->quantity > 0): ?>
-                                    <div class="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">Ready</div>
-                                <?php else: ?>
-                                    <div class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700">Habis</div>
+                                
+                                <span
+                                    class="text-xs px-3 py-1 rounded-full <?php echo e($product->quantity > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'); ?>">
+                                    <?php echo e($product->quantity > 0 ? 'Ready' : 'Habis'); ?>
+
+                                </span>
+                            </div>
+
+                            <div class="text-sm text-zinc-600 mt-1">
+                                <?php echo e($product->category ?? 'Tanpa kategori'); ?>
+
+                                <?php if($product->grade): ?>
+                                    • Grade <?php echo e($product->grade); ?>
+
+                                <?php endif; ?>
+                                <?php if($product->size): ?>
+                                    • Size <?php echo e($product->size); ?>
+
                                 <?php endif; ?>
                             </div>
 
-                            <div class="mt-3 font-black">
+                            <div class="mt-3 text-lg font-black">
                                 Rp <?php echo e(number_format($product->price, 0, ',', '.')); ?>
 
                             </div>
 
-                            <div class="mt-2 text-xs text-zinc-500">
-                                Seller:
-                                <?php if($seller): ?>
-                                    <a href="<?php echo e(route('seller.profile', $seller)); ?>"
-                                        class="underline hover:no-underline font-semibold">
-                                        <?php echo e($seller->name); ?>
+                            <div class="mt-2 text-sm text-zinc-600">
+                                Seller: <?php echo e($product->seller->name ?? 'Seller'); ?>
 
-                                    </a>
-                                    • <?php echo e($avg); ?>★
-                                    <span class="text-zinc-400">(<?php echo e($cnt); ?>)</span>
-                                <?php else: ?>
-                                    Unknown
-                                <?php endif; ?>
                             </div>
                         </div>
                     </a>
