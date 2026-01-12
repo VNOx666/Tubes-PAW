@@ -18,11 +18,7 @@ use App\Http\Controllers\Seller\ProductController as SellerProductController;
 use App\Http\Controllers\Seller\OrderController as SellerOrderController;
 use App\Http\Controllers\SellerProfileController;
 
-/*
-|--------------------------------------------------------------------------
-| Public Pages (tanpa login)
-|--------------------------------------------------------------------------
-*/
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
@@ -35,20 +31,12 @@ Route::get('/seller/{user}', [SellerProfileController::class, 'show'])
     ->whereNumber('user')
     ->name('seller.profile');
 
-/*
-|--------------------------------------------------------------------------
-| Dashboard (Breeze) - arahkan sesuai role
-|--------------------------------------------------------------------------
-*/
+
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| Profile (auth)
-|--------------------------------------------------------------------------
-*/
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
