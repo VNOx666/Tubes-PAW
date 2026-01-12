@@ -121,7 +121,7 @@
     <div class="flex items-start justify-between gap-3">
         <div>
             <h2 class="text-2xl font-black">New Drop</h2>
-            <p class="text-zinc-600">Barang bxzaru masuk, cepat habis.</p>
+            <p class="text-zinc-600">Barang baru masuk, cepat habis.</p>
         </div>
 
         <a href="{{ route('shop') }}" class="px-4 py-2 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
