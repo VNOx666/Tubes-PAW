@@ -23,9 +23,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
-// 🔍 Search produk thrift (alias dari shop index, pakai query ?q=)
-Route::get('/shop/search', [ShopController::class, 'index'])->name('shop.search');
-
 // ✅ Detail product (public)
 Route::get('/product/{slug}', [PublicProductController::class, 'show'])->name('product');
 
