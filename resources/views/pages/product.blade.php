@@ -1,63 +1,112 @@
-@extends('layouts.app', ['title' => 'Detail Produk — Thrifty'])
+@extends('layouts.app', ['title' => ($product->name ?? 'Detail Produk') . ' — Thrifty'])
 
 @section('content')
-    <div class="grid lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {{-- LEFT: FOTO --}}
         <div class="rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden">
-            <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center text-zinc-400">Foto Produk</div>
-            <div class="p-4 flex gap-2">
-                @foreach (range(1, 4) as $i)
-                    <div
-                        class="h-16 w-16 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-xs text-zinc-400">
-                        foto</div>
-                @endforeach
+            <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center overflow-hidden">
+                @if (!empty($product->image))
+                    <img src="{{ asset('storage/' . $product->image) }}"
+                        class="w-full h-full object-cover"
+                        alt="{{ $product->name }}">
+                @else
+                    <span class="text-zinc-400">Foto Produk</span>
+                @endif
+            </div>
+
+            {{-- thumbnails (kalau kamu belum punya multiple image, biarin placeholder) --}}
+            <div class="p-4 flex gap-3">
+                @for ($i = 0; $i < 4; $i++)
+                    <div class="h-16 w-16 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-xs text-zinc-400">
+                        foto
+                    </div>
+                @endfor
             </div>
         </div>
 
-        <div class="space-y-4">
+        {{-- RIGHT: INFO --}}
+        <div>
             <div class="flex items-start justify-between gap-3">
                 <div>
-                    <h1 class="text-3xl font-black">Vintage Hoodie Oversize</h1>
-                    <p class="text-zinc-600">Unisex • Grade A • Ukuran L (fit XL)</p>
+                    <h1 class="text-3xl font-black">{{ $product->name }}</h1>
+                    <p class="text-zinc-600 mt-1">
+                        {{ $product->category ?? 'Tanpa kategori' }}
+                        @if($product->grade) • Grade {{ $product->grade }} @endif
+                        @if($product->size) • Ukuran {{ $product->size }} @endif
+                    </p>
                 </div>
-                <div class="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Ready</div>
+
+                <span class="text-xs px-3 py-1 rounded-full
+                    {{ $product->quantity > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-zinc-200 text-zinc-700' }}">
+                    {{ $product->quantity > 0 ? 'Ready' : 'Sold' }}
+                </span>
             </div>
 
-            <div class="rounded-3xl bg-white border border-zinc-200 shadow-soft p-4">
-                <div class="flex items-end justify-between">
+            <div class="mt-4 rounded-3xl bg-white border border-zinc-200 shadow-soft p-5">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <div class="text-xs text-zinc-600">Harga</div>
-                        <div class="text-3xl font-black">Rp 189.000</div>
+                        <div class="text-sm text-zinc-600">Harga</div>
+                        <div class="text-3xl font-black">
+                            Rp {{ number_format((int) $product->price, 0, ',', '.') }}
+                        </div>
                     </div>
-                    <div class="text-right text-xs text-zinc-600">
-                        <div>Seller: <span class="font-semibold text-black">ThriftKilat</span></div>
-                        <div>Rating: <span class="font-semibold text-black">4.9★</span> (1.2k)</div>
+
+                    <div class="text-right text-sm text-zinc-700">
+                        <div>Seller: <b>{{ $product->seller->name ?? 'Seller' }}</b></div>
                     </div>
                 </div>
 
-                <div class="mt-4 grid grid-cols-2 gap-2">
-                    <a href="{{ route('cart') }}"
-                        class="px-4 py-3 rounded-2xl bg-black text-white text-center hover:opacity-90">+ Keranjang</a>
+                <div class="mt-4 flex flex-col sm:flex-row gap-3">
+                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1">
+                        @csrf
+                        <button type="submit"
+                            class="w-full px-4 py-3 rounded-2xl bg-black text-white hover:opacity-90">
+                            + Keranjang
+                        </button>
+                    </form>
+
                     <a href="{{ route('checkout') }}"
-                        class="px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-center hover:bg-zinc-50">Beli
-                        Sekarang</a>
-                </div>
-
-                <div class="mt-3">
-                    <a href="{{ route('chat') }}"
-                        class="block px-4 py-3 rounded-2xl bg-zinc-900 text-white text-center hover:opacity-90">
-                        Chat Penjual
+                        class="flex-1 text-center px-4 py-3 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+                        Beli Sekarang
                     </a>
                 </div>
+
+                @auth
+    @php
+        $sellerId = $product->user_id ?? optional($product->seller)->id;
+    @endphp
+
+    @if(auth()->user()->role === 'buyer')
+        <a href="{{ route('chat.start', $sellerId) }}"
+           class="w-full px-4 py-3 rounded-2xl bg-zinc-900 text-white text-center hover:opacity-90 block mt-4">
+            Chat Penjual
+        </a>
+    @else
+        {{-- seller tidak boleh chat “penjual lain”, arahkan ke chat seller sendiri --}}
+        <a href="{{ route('seller.chat') }}"
+           class="w-full px-4 py-3 rounded-2xl bg-white border border-zinc-200 text-center hover:bg-zinc-50 block mt-4">
+            Buka Chat Pembeli
+        </a>
+    @endif
+@else
+    <a href="{{ route('login') }}"
+       class="w-full px-4 py-3 rounded-2xl bg-white border border-zinc-200 text-center hover:bg-zinc-50 block mt-4">
+        Login untuk Chat
+    </a>
+@endauth
+
+                </a>
             </div>
 
-            <div class="rounded-3xl bg-white border border-zinc-200 shadow-soft p-4 space-y-2">
-                <div class="font-bold">Deskripsi</div>
-                <ul class="text-sm text-zinc-700 list-disc pl-5 space-y-1">
-                    <li>Bahan tebal, nyaman, tidak panas.</li>
-                    <li>Minus: ada titik kecil (lihat foto detail).</li>
-                    <li>Siap kirim hari ini, packing aman.</li>
-                </ul>
-                <div class="pt-2 text-xs text-zinc-500">Kategori: Hoodie • Vintage • Oversize</div>
+            <div class="mt-5 rounded-3xl bg-white border border-zinc-200 shadow-soft p-5">
+                <h3 class="font-black text-lg">Deskripsi</h3>
+                <div class="mt-2 text-zinc-700 leading-relaxed whitespace-pre-line">
+                    {{ $product->description ?: 'Tidak ada deskripsi.' }}
+                </div>
+
+                <div class="mt-4 text-sm text-zinc-600">
+                    Warna: {{ $product->color ?? '-' }} • Stok: {{ $product->quantity ?? 0 }}
+                </div>
             </div>
         </div>
     </div>

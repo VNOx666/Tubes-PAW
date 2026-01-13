@@ -17,31 +17,51 @@
             </p>
 
             <div class="flex flex-wrap gap-3">
+<<<<<<< HEAD
                 <a href="{{ route('shop') }}"
                     class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
                     Mulai Belanja
                 </a>
+=======
+    @auth
+        @if (auth()->user()->role === 'seller')
+            {{-- ✅ SELLER: hanya boleh jual / dashboard --}}
+            <a href="{{ route('seller.dashboard') }}"
+               class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+                Dashboard Penjual
+            </a>
 
-                {{-- tombol jual aman untuk semua kondisi --}}
-                @auth
-                    @if (auth()->user()->role === 'seller')
-                        <a href="{{ route('seller.dashboard') }}"
-                            class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                            Dashboard Penjual
-                        </a>
-                    @else
-                        <a href="{{ route('seller.dashboard') }}"
-                            class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                            Jual Barang Kamu
-                        </a>
-                    @endif
-                @else
-                    <a href="{{ route('login') }}"
-                        class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                        Jual Barang Kamu
-                    </a>
-                @endauth
-            </div>
+            <a href="{{ route('seller.products.create') }}"
+               class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+                + Tambah Barang
+            </a>
+        @else
+            {{-- ✅ BUYER: hanya boleh belanja --}}
+            <a href="{{ route('shop') }}"
+               class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+                Mulai Belanja
+            </a>
+
+            <a href="{{ route('orders') }}"
+               class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+                Lihat Pesanan
+            </a>
+        @endif
+    @else
+        {{-- ✅ GUEST: boleh lihat shop, tapi untuk jual harus login --}}
+        <a href="{{ route('shop') }}"
+           class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+            Mulai Belanja
+        </a>
+
+        <a href="{{ route('login') }}"
+           class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+            Jual Barang Kamu
+        </a>
+    @endauth
+</div>
+>>>>>>> 98ae58acffc21e7d5c1fa648f93f41510df3fcbd
+
 
             <div class="grid grid-cols-3 gap-3 pt-4">
                 <div class="p-4 rounded-2xl bg-white border border-zinc-200">
@@ -134,6 +154,7 @@
         </div>
     </section>
 
+<<<<<<< HEAD
     <section class="mt-12">
         <div class="flex items-end justify-between gap-3">
             <div>
@@ -144,28 +165,64 @@
                 class="px-4 py-2 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-50">
                 Lihat semua
             </a>
+=======
+    {{-- NEW DROP (ukuran tetap, cuma ganti data jadi dinamis) --}}
+<section class="mt-10">
+    <div class="flex items-start justify-between gap-3">
+        <div>
+            <h2 class="text-2xl font-black">New Drop</h2>
+            <p class="text-zinc-600">Barang baru masuk, cepat habis.</p>
+>>>>>>> 98ae58acffc21e7d5c1fa648f93f41510df3fcbd
         </div>
 
-        <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            @foreach ([['slug' => 'hoodie-vintage', 'name' => 'Hoodie Vintage', 'price' => 'Rp 175.000', 'meta' => 'Oversize • Grade A'], ['slug' => 'jeans-90s', 'name' => 'Jeans 90s', 'price' => 'Rp 145.000', 'meta' => 'Straight • Rare'], ['slug' => 'jacket-denim', 'name' => 'Jacket Denim', 'price' => 'Rp 220.000', 'meta' => 'Unisex • Tebal'], ['slug' => 'bag-retro', 'name' => 'Tas Retro', 'price' => 'Rp 120.000', 'meta' => 'Leather-look']] as $item)
-                <a href="{{ route('product', $item['slug']) }}"
-                    class="group rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden hover:-translate-y-0.5 transition">
-                    <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center text-zinc-400">
-                        <span class="text-sm">Foto Produk</span>
+        <a href="{{ route('shop') }}" class="px-4 py-2 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+            Lihat semua
+        </a>
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        @forelse ($newDrops as $product)
+            <a href="{{ route('product', $product->slug) }}"
+                class="rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden hover:shadow-md transition">
+                <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center overflow-hidden">
+                    @if ($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-full object-cover"
+                            alt="{{ $product->name }}">
+                    @else
+                        <span class="text-zinc-400">Foto Produk</span>
+                    @endif
+                </div>
+
+                <div class="p-4">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="font-bold line-clamp-1">{{ $product->name }}</div>
+
+                        <span class="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                            Ready
+                        </span>
                     </div>
-                    <div class="p-4">
-                        <div class="flex items-start justify-between gap-2">
-                            <div>
-                                <div class="font-bold group-hover:underline">{{ $item['name'] }}</div>
-                                <div class="text-xs text-zinc-600">{{ $item['meta'] }}</div>
-                            </div>
-                            <div class="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">Ready</div>
-                        </div>
-                        <div class="mt-3 font-black">{{ $item['price'] }}</div>
-                        <div class="mt-2 text-xs text-zinc-500">Seller: ThriftKilat • 4.9★</div>
+
+                    <div class="text-sm text-zinc-600 mt-1">
+                        {{ $product->category ?? 'Tanpa kategori' }}
+                        @if ($product->grade)
+                            • Grade {{ $product->grade }}
+                        @endif
                     </div>
-                </a>
-            @endforeach
-        </div>
-    </section>
+
+                    <div class="mt-3 text-lg font-black">
+                        Rp {{ number_format($product->price, 0, ',', '.') }}
+                    </div>
+
+                    <div class="mt-2 text-sm text-zinc-600">
+                        Seller: {{ $product->seller->name ?? 'Seller' }}
+                    </div>
+                </div>
+            </a>
+        @empty
+            <div class="col-span-full p-6 rounded-3xl bg-white border border-zinc-200 text-zinc-600">
+                Belum ada produk yang dijual. Seller bisa mulai dari menu <b>Mode Seller</b> → <b>Tambah Produk</b>.
+            </div>
+        @endforelse
+    </div>
+</section>
 @endsection

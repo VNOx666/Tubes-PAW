@@ -1,75 +1,73 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
-            <span class="d-inline-flex align-items-center justify-content-center rounded bg-dark text-white"
-                  style="width:36px;height:36px;">T</span>
-            <span class="fw-bold">Thrifty</span>
-        </a>
+<nav class="bg-white border-b border-zinc-200">
+    <div class="container py-3">
+        <div class="flex items-center justify-between gap-3">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            {{-- LEFT: LOGO --}}
+            <a href="{{ route('home') }}" class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-zinc-900 text-white flex items-center justify-center font-black">
+                    T
+                </div>
+                <div class="font-black text-xl text-zinc-900">Thrifty</div>
+            </a>
 
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                @guest
-                    <li class="nav-item">
-                        <a class="nav-link @if(request()->routeIs('home')) active @endif" href="{{ route('home') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @if(request()->routeIs('shop')) active @endif" href="{{ route('shop') }}">Shop</a>
-                    </li>
-                @endguest
+            {{-- RIGHT: SEARCH + PROFILE --}}
+            <div class="flex items-center gap-3">
 
+                {{-- SEARCH --}}
+                <form action="{{ route('shop') }}" method="GET" class="relative hidden sm:block">
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ request('q') }}"
+                        placeholder="Search..."
+                        class="w-[260px] rounded-xl border border-zinc-200 bg-white
+                               pl-10 pr-14 py-2 text-sm shadow-sm
+                               focus:outline-none focus:ring-2 focus:ring-zinc-200"
+                    >
+
+                    {{-- icon search --}}
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">
+                        🔍
+                    </span>
+
+                    {{-- Ctrl + K --}}
+                    <span
+                        class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2
+                               rounded-md border border-zinc-200 bg-zinc-50
+                               px-2 py-0.5 text-[10px] text-zinc-500">
+                        Ctrl K
+                    </span>
+                </form>
+
+                {{-- PROFILE / LOGIN --}}
                 @auth
-                    <li class="nav-item">
-                        <a class="nav-link @if(request()->routeIs('dashboard')) active @endif"
-                           href="{{ route('dashboard') }}">Dashboard</a>
-                    </li>
-
-                    @if(auth()->user()->role === 'buyer')
-                        <li class="nav-item"><a class="nav-link @if(request()->routeIs('shop')) active @endif" href="{{ route('shop') }}">Shop</a></li>
-                        <li class="nav-item"><a class="nav-link @if(request()->routeIs('cart*')) active @endif" href="{{ route('cart') }}">Keranjang</a></li>
-                        <li class="nav-item"><a class="nav-link @if(request()->routeIs('orders*')) active @endif" href="{{ route('orders') }}">Pesanan</a></li>
-                        <li class="nav-item"><a class="nav-link @if(request()->routeIs('chat*')) active @endif" href="{{ route('chat') }}">Chat</a></li>
+                    {{-- JIKA SELLER --}}
+                    @if(auth()->user()->role === 'seller')
+                        <a href="{{ route('seller.profile', auth()->user()->id) }}"
+                           class="h-10 w-10 flex items-center justify-center rounded-full
+                                  border border-zinc-200 bg-white font-semibold shadow-sm
+                                  hover:bg-zinc-50">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </a>
                     @else
-                        <li class="nav-item"><a class="nav-link @if(request()->routeIs('seller.dashboard')) active @endif" href="{{ route('seller.dashboard') }}">Dashboard Seller</a></li>
-                        <li class="nav-item"><a class="nav-link @if(request()->routeIs('seller.products*')) active @endif" href="{{ route('seller.products.index') }}">Produk</a></li>
-
-                        {{-- kalau route seller orders belum ada, comment dulu 3 baris ini --}}
-                        <li class="nav-item"><a class="nav-link @if(request()->routeIs('seller.orders*')) active @endif" href="{{ route('seller.orders.index') }}">Orders</a></li>
-
-                        <li class="nav-item"><a class="nav-link @if(request()->routeIs('seller.chat*')) active @endif" href="{{ route('seller.chat') }}">Chat</a></li>
+                        {{-- JIKA BUYER --}}
+                        <a href="{{ route('profile.edit') }}"
+                           class="h-10 w-10 flex items-center justify-center rounded-full
+                                  border border-zinc-200 bg-white font-semibold shadow-sm
+                                  hover:bg-zinc-50">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </a>
                     @endif
+                @else
+                    {{-- GUEST --}}
+                    <a href="{{ route('login') }}"
+                       class="px-4 py-2 rounded-xl border border-zinc-200 bg-white
+                              text-sm hover:bg-zinc-50">
+                        Login
+                    </a>
                 @endauth
-            </ul>
 
-            <div class="d-flex align-items-center gap-2">
-                @guest
-                    <a class="btn btn-outline-secondary btn-sm" href="{{ route('login') }}">Login</a>
-                    <a class="btn btn-dark btn-sm" href="{{ route('register') }}">Register</a>
-                @endguest
-
-                @auth
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ auth()->user()->name }}
-                        </button>
-
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger">Log Out</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                @endauth
             </div>
         </div>
     </div>

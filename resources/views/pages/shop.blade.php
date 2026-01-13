@@ -20,12 +20,12 @@
                     <div>
                         <label class="text-xs text-zinc-600">Min</label>
                         <input class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
-                            placeholder="50k" />
+                               placeholder="50k" />
                     </div>
                     <div>
                         <label class="text-xs text-zinc-600">Max</label>
                         <input class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
-                            placeholder="300k" />
+                               placeholder="300k" />
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                         <option>Rating Seller</option>
                     </select>
 
-                    {{-- Keranjang hanya untuk buyer (route cart ada di middleware buyer) --}}
+                    {{-- Keranjang hanya untuk buyer --}}
                     @auth
                         @if(auth()->user()->role === 'buyer')
                             <a href="{{ route('cart') }}"
@@ -96,60 +96,50 @@
                 </div>
             </div>
 
-            {{-- GRID PRODUK DARI DATABASE --}}
-            <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {{-- GRID PRODUK (UKURAN SAMA KAYAK HOME - NEW DROP) --}}
+            <div class="mt-6 grid grid-cols-3 gap-5">
                 @forelse ($products as $product)
-                    @php
-                        $seller = $product->seller ?? null;
-                        $avg = $seller ? round($seller->averageRating(), 1) : 0;
-                        $cnt = $seller ? $seller->ratingCount() : 0;
-                    @endphp
-
                     <a href="{{ route('product', $product->slug) }}"
-                        class="group rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden hover:-translate-y-0.5 transition">
-                        <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center text-zinc-400 overflow-hidden">
+                        class="rounded-3xl bg-white border border-zinc-200 shadow-soft overflow-hidden hover:shadow-md transition">
+
+                        <div class="aspect-[4/3] bg-zinc-100 flex items-center justify-center overflow-hidden">
                             @if ($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                                    class="h-full w-full object-cover" />
+                                <img src="{{ asset('storage/' . $product->image) }}"
+                                     class="w-full h-full object-cover"
+                                     alt="{{ $product->name }}">
                             @else
-                                <span class="text-sm">Foto Produk</span>
+                                <span class="text-zinc-400">Foto Produk</span>
                             @endif
                         </div>
 
                         <div class="p-4">
-                            <div class="flex items-start justify-between gap-2">
-                                <div>
-                                    <div class="font-bold group-hover:underline">{{ $product->name }}</div>
-                                    <div class="text-xs text-zinc-600">
-                                        {{ $product->category ?? 'Unisex' }}
-                                        @if($product->grade) • Grade {{ $product->grade }} @endif
-                                        @if($product->size) • Size {{ $product->size }} @endif
-                                    </div>
-                                </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="font-bold line-clamp-1">{{ $product->name }}</div>
 
                                 @if ($product->quantity > 0)
-                                    <div class="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">Ready</div>
+                                    <span class="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                                        Ready
+                                    </span>
                                 @else
-                                    <div class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700">Habis</div>
+                                    <span class="text-xs px-3 py-1 rounded-full bg-red-100 text-red-700">
+                                        Habis
+                                    </span>
                                 @endif
                             </div>
 
-                            <div class="mt-3 font-black">
+                            {{-- ini yang bikin “Size L” nggak turun baris: dibikin 1 baris pakai line-clamp-1 --}}
+                            <div class="text-sm text-zinc-600 mt-1 line-clamp-1">
+                                {{ $product->category ?? 'Tanpa kategori' }}
+                                @if ($product->grade) • Grade {{ $product->grade }} @endif
+                                @if ($product->size) • Size {{ $product->size }} @endif
+                            </div>
+
+                            <div class="mt-3 text-lg font-black">
                                 Rp {{ number_format($product->price, 0, ',', '.') }}
                             </div>
 
-                            <div class="mt-2 text-xs text-zinc-500">
-                                Seller:
-                                @if ($seller)
-                                    <a href="{{ route('seller.profile', $seller) }}"
-                                        class="underline hover:no-underline font-semibold">
-                                        {{ $seller->name }}
-                                    </a>
-                                    • {{ $avg }}★
-                                    <span class="text-zinc-400">({{ $cnt }})</span>
-                                @else
-                                    Unknown
-                                @endif
+                            <div class="mt-2 text-sm text-zinc-600 line-clamp-1">
+                                Seller: {{ $product->seller->name ?? 'Seller' }}
                             </div>
                         </div>
                     </a>
