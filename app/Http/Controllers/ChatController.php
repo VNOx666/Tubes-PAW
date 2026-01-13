@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    // list chat user (buyer/seller)
     public function index(Request $request)
     {
         $user = $request->user();
@@ -24,25 +24,53 @@ class ChatController extends Controller
         return view('pages.chat.index', compact('conversations'));
     }
 
-    // buka chat berdasarkan order (lebih gampang dipakai)
+    // START CHAT TANPA ORDER (dari halaman product / profil seller)
+    public function start(Request $request, User $seller)
+    {
+        $buyer = $request->user();
+
+        if ($buyer->role !== 'buyer') abort(403);
+        if ($seller->role !== 'seller') abort(404);
+
+        // IMPORTANT: thread_key wajib diisi (karena kolom thread_key NOT NULL)
+        $threadKey = "pre:{$buyer->id}:{$seller->id}";
+
+        $conversation = Conversation::firstOrCreate(
+            ['thread_key' => $threadKey],
+            [
+                'order_id' => null,
+                'buyer_id' => $buyer->id,
+                'seller_id' => $seller->id,
+            ]
+        );
+
+        return redirect()->route('chat.show', $conversation);
+    }
+
+    // CHAT BERDASARKAN ORDER (existing kamu)
     public function showByOrder(Request $request, Order $order)
     {
         $user = $request->user();
 
+        // buyer owner order boleh
         if ($order->user_id !== $user->id) {
-            // seller boleh akses kalau dia memang pemilik item pada order tsb
+            // seller yang ada di order items boleh
             $isSeller = $order->items()->where('seller_id', $user->id)->exists();
             if (!$isSeller) abort(403);
         }
 
-        // ambil seller pertama (simple: order bisa multi seller, nanti kita tingkatkan)
         $sellerId = $order->items()->value('seller_id');
 
-        $conversation = Conversation::firstOrCreate([
-            'order_id' => $order->id,
-            'buyer_id' => $order->user_id,
-            'seller_id' => $sellerId,
-        ]);
+        $threadKey = "order:{$order->id}:{$order->user_id}:{$sellerId}";
+
+        $conversation = Conversation::firstOrCreate(
+            ['thread_key' => $threadKey],
+            [
+                'order_id' => $order->id,
+                'buyer_id' => $order->user_id,
+                'seller_id' => $sellerId,
+            ]
+        );
 
         return redirect()->route('chat.show', $conversation);
     }
@@ -53,7 +81,6 @@ class ChatController extends Controller
 
         $conversation->load(['order', 'buyer', 'seller', 'messages.sender']);
 
-        // mark read: semua message dari lawan yang belum read
         Message::where('conversation_id', $conversation->id)
             ->whereNull('read_at')
             ->where('sender_id', '!=', $request->user()->id)
@@ -76,7 +103,6 @@ class ChatController extends Controller
             'body' => $data['body'],
         ]);
 
-        // supaya urutan chat naik
         $conversation->touch();
 
         return back();

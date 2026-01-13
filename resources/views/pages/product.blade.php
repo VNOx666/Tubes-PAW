@@ -71,9 +71,30 @@
                     </a>
                 </div>
 
-                <a href="{{ route('chat') }}"
-                    class="mt-3 block text-center px-4 py-3 rounded-2xl bg-zinc-900 text-white hover:opacity-90">
-                    Chat Penjual
+                @auth
+    @php
+        $sellerId = $product->user_id ?? optional($product->seller)->id;
+    @endphp
+
+    @if(auth()->user()->role === 'buyer')
+        <a href="{{ route('chat.start', $sellerId) }}"
+           class="w-full px-4 py-3 rounded-2xl bg-zinc-900 text-white text-center hover:opacity-90 block mt-4">
+            Chat Penjual
+        </a>
+    @else
+        {{-- seller tidak boleh chat “penjual lain”, arahkan ke chat seller sendiri --}}
+        <a href="{{ route('seller.chat') }}"
+           class="w-full px-4 py-3 rounded-2xl bg-white border border-zinc-200 text-center hover:bg-zinc-50 block mt-4">
+            Buka Chat Pembeli
+        </a>
+    @endif
+@else
+    <a href="{{ route('login') }}"
+       class="w-full px-4 py-3 rounded-2xl bg-white border border-zinc-200 text-center hover:bg-zinc-50 block mt-4">
+        Login untuk Chat
+    </a>
+@endauth
+
                 </a>
             </div>
 

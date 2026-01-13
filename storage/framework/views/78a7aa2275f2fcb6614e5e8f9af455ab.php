@@ -14,30 +14,44 @@
             </p>
 
             <div class="flex flex-wrap gap-3">
-                <a href="<?php echo e(route('shop')); ?>" class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
-                    Mulai Belanja
-                </a>
+    <?php if(auth()->guard()->check()): ?>
+        <?php if(auth()->user()->role === 'seller'): ?>
+            
+            <a href="<?php echo e(route('seller.dashboard')); ?>"
+               class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+                Dashboard Penjual
+            </a>
 
-                
-                <?php if(auth()->guard()->check()): ?>
-                    <?php if(auth()->user()->role === 'seller'): ?>
-                        <a href="<?php echo e(route('seller.dashboard')); ?>"
-                            class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                            Dashboard Penjual
-                        </a>
-                    <?php else: ?>
-                        <a href="<?php echo e(route('seller.dashboard')); ?>"
-                            class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                            Jual Barang Kamu
-                        </a>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <a href="<?php echo e(route('login')); ?>"
-                        class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                        Jual Barang Kamu
-                    </a>
-                <?php endif; ?>
-            </div>
+            <a href="<?php echo e(route('seller.products.create')); ?>"
+               class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+                + Tambah Barang
+            </a>
+        <?php else: ?>
+            
+            <a href="<?php echo e(route('shop')); ?>"
+               class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+                Mulai Belanja
+            </a>
+
+            <a href="<?php echo e(route('orders')); ?>"
+               class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+                Lihat Pesanan
+            </a>
+        <?php endif; ?>
+    <?php else: ?>
+        
+        <a href="<?php echo e(route('shop')); ?>"
+           class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+            Mulai Belanja
+        </a>
+
+        <a href="<?php echo e(route('login')); ?>"
+           class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+            Jual Barang Kamu
+        </a>
+    <?php endif; ?>
+</div>
+
 
             <div class="grid grid-cols-3 gap-3 pt-4">
                 <div class="p-4 rounded-2xl bg-white border border-zinc-200">
