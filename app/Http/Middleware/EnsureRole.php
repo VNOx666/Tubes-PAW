@@ -4,20 +4,19 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class EnsureRole
 {
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = $request->user();
+        if (!$user) abort(401);
 
-        if (!$user) {
-            return redirect()->route('login');
-        }
+        // Sesuaikan field role kamu: role, user_type, is_seller, dsb.
+        $userRole = $user->role ?? null;
 
-        if ($user->role !== $role) {
-            abort(403, "Akses khusus role: {$role}");
+        if (!$userRole || (!empty($roles) && !in_array($userRole, $roles, true))) {
+            abort(403, 'Forbidden');
         }
 
         return $next($request);
