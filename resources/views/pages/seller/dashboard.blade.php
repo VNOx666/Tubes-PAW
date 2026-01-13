@@ -1,4 +1,6 @@
-@extends('layouts.app', ['title' => 'Dashboard Penjual — Thrifty'])
+@extends('layouts.app')
+
+@php($title = 'Dashboard Penjual — Thrifty')
 
 @section('content')
     <div class="flex items-start justify-between gap-3">
@@ -7,10 +9,12 @@
             <p class="text-zinc-600">Kelola barang, order, status, dan chat.</p>
         </div>
 
-        <a href="{{ route('seller.products.create') }}"
-           class="px-4 py-2 rounded-2xl bg-black text-white hover:opacity-90">
-            + Tambah Barang
-        </a>
+        @if (Route::has('seller.products.create'))
+            <a href="{{ route('seller.products.create') }}"
+               class="px-4 py-2 rounded-2xl bg-black text-white hover:opacity-90">
+                + Tambah Barang
+            </a>
+        @endif
     </div>
 
     <div class="mt-5 grid md:grid-cols-4 gap-4">
@@ -40,32 +44,40 @@
 
             <div class="mt-3 grid sm:grid-cols-2 gap-2">
                 {{-- ✅ CRUD Barang --}}
-                <a href="{{ route('seller.products.index') }}"
-                   class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
-                    <div class="font-semibold">CRUD Barang</div>
-                    <div class="text-xs text-zinc-500">Tambah/edit/hapus barang</div>
-                </a>
+                @if (Route::has('seller.products.index'))
+                    <a href="{{ route('seller.products.index') }}"
+                       class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+                        <div class="font-semibold">CRUD Barang</div>
+                        <div class="text-xs text-zinc-500">Tambah/edit/hapus barang</div>
+                    </a>
+                @endif
 
-                {{-- ✅ Chat Seller (kalau route seller.chat ada) --}}
-                <a href="{{ route('seller.chat') }}"
-                   class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
-                    <div class="font-semibold">Chat Pembeli</div>
-                    <div class="text-xs text-zinc-500">Balas lebih cepat</div>
-                </a>
+                {{-- ✅ Chat Seller (tampil hanya kalau routenya ada) --}}
+                @if (Route::has('seller.chat'))
+                    <a href="{{ route('seller.chat') }}"
+                       class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+                        <div class="font-semibold">Chat Pembeli</div>
+                        <div class="text-xs text-zinc-500">Balas lebih cepat</div>
+                    </a>
+                @endif
 
                 {{-- ✅ Tracking Status (Seller Orders) --}}
-                <a href="{{ route('seller.orders.index') }}"
-                   class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
-                    <div class="font-semibold">Tracking Status</div>
-                    <div class="text-xs text-zinc-500">Update resi & status</div>
-                </a>
+                @if (Route::has('seller.orders.index'))
+                    <a href="{{ route('seller.orders.index') }}"
+                       class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+                        <div class="font-semibold">Tracking Status</div>
+                        <div class="text-xs text-zinc-500">Update resi & status</div>
+                    </a>
+                @endif
 
                 {{-- ✅ Profile (Breeze) --}}
-                <a href="{{ route('profile.edit') }}"
-                   class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
-                    <div class="font-semibold">Profil & Rating</div>
-                    <div class="text-xs text-zinc-500">Lihat feedback</div>
-                </a>
+                @if (Route::has('profile.edit'))
+                    <a href="{{ route('profile.edit') }}"
+                       class="p-4 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+                        <div class="font-semibold">Profil & Rating</div>
+                        <div class="text-xs text-zinc-500">Lihat feedback</div>
+                    </a>
+                @endif
             </div>
         </div>
     </div>

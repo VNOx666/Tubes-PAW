@@ -15,13 +15,14 @@
 </head>
 
 <body class="bg-light">
-    @if(request()->is('seller*'))
-    @include('layouts.seller-navigation')
-@else
-    @include('layouts.navigation')
-@endif
+    {{-- Navbar --}}
+    @if (request()->is('seller*'))
+        @include('layouts.seller-navigation')
+    @else
+        @include('layouts.navigation')
+    @endif
 
-
+    {{-- Optional Header --}}
     @hasSection('header')
         <header class="bg-white border-bottom">
             <div class="container py-3">
@@ -30,6 +31,7 @@
         </header>
     @endif
 
+    {{-- Main Content --}}
     <main class="py-4">
         <div class="container">
             @yield('content')
@@ -38,5 +40,18 @@
 
     {{-- Bootstrap JS Bundle (CDN) --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {{-- Close dropdown when clicking outside (for #userDropdown) --}}
+    <script>
+        document.addEventListener('click', function (e) {
+            const dropdown = document.getElementById('userDropdown');
+            if (!dropdown) return;
+
+            // kalau klik di luar dropdown dan di luar tombol toggle
+            if (!e.target.closest('#userDropdown') && !e.target.closest('[data-dropdown-toggle="userDropdown"]')) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
