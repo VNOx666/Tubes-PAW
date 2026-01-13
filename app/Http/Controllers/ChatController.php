@@ -24,7 +24,7 @@ class ChatController extends Controller
         return view('pages.chat.index', compact('conversations'));
     }
 
-    // START CHAT TANPA ORDER (dari halaman product / profil seller)
+    // ✅ START CHAT TANPA ORDER (dari halaman produk / profil seller)
     public function start(Request $request, User $seller)
     {
         $buyer = $request->user();
@@ -32,7 +32,6 @@ class ChatController extends Controller
         if ($buyer->role !== 'buyer') abort(403);
         if ($seller->role !== 'seller') abort(404);
 
-        // IMPORTANT: thread_key wajib diisi (karena kolom thread_key NOT NULL)
         $threadKey = "pre:{$buyer->id}:{$seller->id}";
 
         $conversation = Conversation::firstOrCreate(
@@ -47,27 +46,28 @@ class ChatController extends Controller
         return redirect()->route('chat.show', $conversation);
     }
 
-    // CHAT BERDASARKAN ORDER (existing kamu)
+    // ✅ CHAT BERDASARKAN ORDER
     public function showByOrder(Request $request, Order $order)
     {
         $user = $request->user();
 
-        // buyer owner order boleh
+        // Buyer boleh akses order nya sendiri
+        // Seller boleh akses kalau ada item milik seller tsb
         if ($order->user_id !== $user->id) {
-            // seller yang ada di order items boleh
             $isSeller = $order->items()->where('seller_id', $user->id)->exists();
             if (!$isSeller) abort(403);
         }
 
         $sellerId = $order->items()->value('seller_id');
+        $buyerId  = $order->user_id;
 
-        $threadKey = "order:{$order->id}:{$order->user_id}:{$sellerId}";
+        $threadKey = "ord:{$order->id}:{$buyerId}:{$sellerId}";
 
         $conversation = Conversation::firstOrCreate(
             ['thread_key' => $threadKey],
             [
                 'order_id' => $order->id,
-                'buyer_id' => $order->user_id,
+                'buyer_id' => $buyerId,
                 'seller_id' => $sellerId,
             ]
         );
@@ -116,4 +116,4 @@ class ChatController extends Controller
             abort(403, 'Akses chat ditolak.');
         }
     }
-}
+}   
