@@ -110,20 +110,8 @@
 
                 <hr class="my-4">
 
-                {{-- ACTIONS (TIDAK BOLEH DI DALAM FORM DI ATAS) --}}
+                {{-- ACTIONS --}}
                 <div class="d-flex flex-column flex-sm-row gap-2">
-
-                    {{-- SWITCH (HARUS LOGIN DULU) --}}
-                    @php
-                        $targetRole = auth()->user()->role === 'seller' ? 'buyer' : 'seller';
-                    @endphp
-
-                    <a
-                        href="{{ route('login', ['switch' => $targetRole, 'redirect' => url('/')]) }}"
-                        class="btn btn-outline-secondary rounded-4 px-4"
-                    >
-                        Switch ke {{ $targetRole === 'buyer' ? 'Buyer' : 'Seller' }}
-                    </a>
 
                     {{-- LOGOUT --}}
                     <form method="POST" action="{{ route('logout') }}" class="ms-sm-auto">

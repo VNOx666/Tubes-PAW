@@ -11,11 +11,11 @@
 </head>
 <body class="min-h-screen bg-zinc-50">
 
-    {{-- NAVBAR GUEST (khusus login/register) --}}
+    {{-- NAVBAR GUEST --}}
     <nav class="bg-white border-b border-zinc-200">
-        <div class="container py-3">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <div class="flex items-center justify-between gap-3">
-                <a href="{{ route('home') }}" class="flex items-center gap-3 text-decoration-none">
+                <a href="{{ route('home') }}" class="flex items-center gap-3 no-underline">
                     <div class="w-10 h-10 rounded-2xl bg-zinc-900 text-white flex items-center justify-center font-black">
                         T
                     </div>
@@ -33,13 +33,15 @@
     </nav>
 
     {{-- CONTENT --}}
-    <div class="py-10">
-        <div class="container">
+    <main class="py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-md mx-auto">
-                {{ $slot }}
+                <div class="bg-white border border-zinc-200 shadow-soft rounded-3xl p-6 sm:p-8">
+                    {{ $slot }}
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
 </body>
 </html>

@@ -6,15 +6,18 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request)
+    public function index(Request $request)
     {
-        $user = $request->user();
+        $role = $request->user()->role ?? null;
 
-        if ($user->role === 'seller') {
+        if ($role === 'seller') {
             return redirect()->route('seller.dashboard');
         }
 
-        // buyer arahkan ke halaman home/shop kamu
+        if ($role === 'buyer') {
+            return redirect()->route('shop');
+        }
+
         return redirect()->route('home');
     }
 }

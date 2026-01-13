@@ -16,30 +16,44 @@
             </p>
 
             <div class="flex flex-wrap gap-3">
-                <a href="{{ route('shop') }}" class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
-                    Mulai Belanja
-                </a>
+    @auth
+        @if (auth()->user()->role === 'seller')
+            {{-- ✅ SELLER: hanya boleh jual / dashboard --}}
+            <a href="{{ route('seller.dashboard') }}"
+               class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+                Dashboard Penjual
+            </a>
 
-                {{-- tombol jual aman untuk semua kondisi --}}
-                @auth
-                    @if (auth()->user()->role === 'seller')
-                        <a href="{{ route('seller.dashboard') }}"
-                            class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                            Dashboard Penjual
-                        </a>
-                    @else
-                        <a href="{{ route('seller.dashboard') }}"
-                            class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                            Jual Barang Kamu
-                        </a>
-                    @endif
-                @else
-                    <a href="{{ route('login') }}"
-                        class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
-                        Jual Barang Kamu
-                    </a>
-                @endauth
-            </div>
+            <a href="{{ route('seller.products.create') }}"
+               class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+                + Tambah Barang
+            </a>
+        @else
+            {{-- ✅ BUYER: hanya boleh belanja --}}
+            <a href="{{ route('shop') }}"
+               class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+                Mulai Belanja
+            </a>
+
+            <a href="{{ route('orders') }}"
+               class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+                Lihat Pesanan
+            </a>
+        @endif
+    @else
+        {{-- ✅ GUEST: boleh lihat shop, tapi untuk jual harus login --}}
+        <a href="{{ route('shop') }}"
+           class="px-5 py-3 rounded-2xl bg-black text-white shadow-soft hover:opacity-90">
+            Mulai Belanja
+        </a>
+
+        <a href="{{ route('login') }}"
+           class="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50">
+            Jual Barang Kamu
+        </a>
+    @endauth
+</div>
+
 
             <div class="grid grid-cols-3 gap-3 pt-4">
                 <div class="p-4 rounded-2xl bg-white border border-zinc-200">
