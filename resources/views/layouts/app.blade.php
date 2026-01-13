@@ -14,27 +14,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-light">
-    @if(request()->is('seller*'))
-    @include('layouts.seller-navigation')
-@else
-    @include('layouts.navigation')
-@endif
-
-
-    @hasSection('header')
-        <header class="bg-white border-bottom">
-            <div class="container py-3">
-                @yield('header')
-            </div>
-        </header>
-    @endif
-
-    <main class="py-4">
-        <div class="container">
-            @yield('content')
-        </div>
-    </main>
+<body class="bg-zinc-50">
+    {{-- NAVIGATION (berisi sidebar + header + wrapper content) --}}
+    @auth
+        @if(auth()->user()->role === 'seller')
+            @include('layouts.seller-navigation')
+        @else
+            @include('layouts.navigation')
+        @endif
+    @else
+        @include('layouts.navigation')
+    @endauth
 
     {{-- Bootstrap JS Bundle (CDN) --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

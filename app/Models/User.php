@@ -2,24 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Review;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -29,21 +21,11 @@ class User extends Authenticatable
         'bio',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -52,47 +34,39 @@ class User extends Authenticatable
         ];
     }
 
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany(Product::class);
     }
 
-    /**
-     * Helper: cek apakah user role seller.
-     */
     public function isSeller(): bool
     {
         return $this->role === 'seller';
     }
 
-    /**
-     * Helper: cek apakah user role buyer.
-     */
     public function isBuyer(): bool
     {
         return $this->role === 'buyer';
     }
 
-    /**
-     * Reviews yang diterima user (sebagai seller).
-     */
     public function receivedReviews(): HasMany
     {
         return $this->hasMany(Review::class, 'seller_id');
     }
 
     /**
-     * Rata-rata rating seller.
+     * Rata-rata rating seller (contoh sederhana).
+     * Kalau kamu punya kolom rating di tabel reviews, ganti jadi avg('rating').
      */
     public function averageRating(): float
     {
-        // return float, aman kalau null
-        return (float) ($this->receivedReviews()->avg('rating') ?? 0);
+        // Kalau tabel reviews punya kolom "rating":
+        // return (float) ($this->receivedReviews()->avg('rating') ?? 0);
+
+        // Kalau belum ada kolom rating, fallback:
+        return 0.0;
     }
 
-    /**
-     * Jumlah rating/ulasan seller.
-     */
     public function ratingCount(): int
     {
         return (int) $this->receivedReviews()->count();
