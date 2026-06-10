@@ -2,7 +2,7 @@
 
 @section('content')
     <h1 class="text-2xl font-black">Edit Produk</h1>
-    <p class="text-zinc-600">Perbarui detail barang kamu.</p>
+    <p class="text-zinc-600">Perbarui detail barang thrift kamu.</p>
 
     @if ($errors->any())
         <div class="mt-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700">
@@ -14,7 +14,8 @@
         </div>
     @endif
 
-    <form class="mt-5 grid lg:grid-cols-3 gap-6" method="POST" action="{{ route('seller.products.update', $product) }}"
+    <form class="mt-5 grid lg:grid-cols-3 gap-6" method="POST"
+        action="{{ route('seller.products.update', $product) }}"
         enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -24,13 +25,15 @@
                 <div class="sm:col-span-2">
                     <label class="text-sm font-semibold">Nama Produk</label>
                     <input name="name" value="{{ old('name', $product->name) }}"
-                        class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2" required />
+                        class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
+                        required />
                 </div>
 
                 <div>
                     <label class="text-sm font-semibold">Harga (Rp)</label>
                     <input name="price" value="{{ old('price', $product->price) }}" type="number" min="0"
-                        class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2" required />
+                        class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
+                        required />
                 </div>
 
                 <div>
@@ -45,7 +48,8 @@
                         <option value="">-</option>
                         @foreach (['A', 'B', 'C'] as $g)
                             <option value="{{ $g }}" {{ old('grade', $product->grade) === $g ? 'selected' : '' }}>
-                                {{ $g }}</option>
+                                {{ $g }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -64,8 +68,8 @@
 
                 <div>
                     <label class="text-sm font-semibold">Quantity</label>
-                    <input name="quantity" value="{{ old('quantity', $product->quantity) }}" type="number" min="1"
-                        max="99" class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
+                    <input name="quantity" value="{{ old('quantity', $product->quantity) }}" type="number" min="1" max="99"
+                        class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2"
                         required />
                 </div>
 
@@ -73,16 +77,22 @@
                     <label class="text-sm font-semibold">Status</label>
                     <select name="status" class="w-full mt-1 rounded-2xl border border-zinc-200 bg-white px-3 py-2"
                         required>
-                        @foreach (['active', 'draft', 'sold'] as $s)
-                            <option value="{{ $s }}" {{ old('status', $product->status) === $s ? 'selected' : '' }}>
-                                {{ strtoupper($s) }}</option>
-                        @endforeach
+                        <option value="active" {{ old('status', $product->status) === 'active' ? 'selected' : '' }}>
+                            Active
+                        </option>
+                        <option value="draft" {{ old('status', $product->status) === 'draft' ? 'selected' : '' }}>
+                            Draft
+                        </option>
+                        <option value="sold" {{ old('status', $product->status) === 'sold' ? 'selected' : '' }}>
+                            Sold
+                        </option>
                     </select>
                 </div>
 
                 <div class="sm:col-span-2">
                     <label class="text-sm font-semibold">Deskripsi</label>
-                    <textarea name="description" rows="5" class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2">{{ old('description', $product->description) }}</textarea>
+                    <textarea name="description" rows="5"
+                        class="w-full mt-1 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2">{{ old('description', $product->description) }}</textarea>
                 </div>
             </div>
         </div>
@@ -90,25 +100,26 @@
         <div class="rounded-3xl bg-white border border-zinc-200 shadow-soft p-4 h-fit space-y-3">
             <div class="font-bold">Foto Utama</div>
 
-            <div class="rounded-2xl bg-zinc-100 border border-zinc-200 overflow-hidden">
-                @if ($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-48 object-cover"
-                        alt="{{ $product->name }}">
-                @else
-                    <div class="h-48 flex items-center justify-center text-zinc-400 text-sm">No Photo</div>
-                @endif
-            </div>
+            @if ($product->image)
+                <img src="{{ asset('storage/' . $product->image) }}"
+                    class="w-full h-40 object-cover rounded-2xl border border-zinc-200"
+                    alt="{{ $product->name }}">
+            @else
+                <div class="w-full h-40 rounded-2xl bg-zinc-100 flex items-center justify-center text-zinc-400">
+                    Belum ada foto
+                </div>
+            @endif
 
             <input name="image" type="file" accept="image/*" class="w-full" />
-            <p class="text-xs text-zinc-500">Upload untuk mengganti foto (optional).</p>
+            <p class="text-xs text-zinc-500">Kosongkan jika tidak ingin mengganti foto. Maksimal 2MB.</p>
 
             <button class="w-full px-4 py-3 rounded-2xl bg-black text-white hover:opacity-90">
-                Update Produk
+                Simpan Perubahan
             </button>
 
             <a href="{{ route('seller.products.index') }}"
                 class="block w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-center hover:bg-zinc-50">
-                Kembali
+                Batal
             </a>
         </div>
     </form>

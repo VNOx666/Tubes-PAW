@@ -56,6 +56,11 @@
                         </div>
 
                         <div class="flex items-center gap-2">
+                            <a href="{{ route('seller.products.edit', $product) }}"
+                                class="px-4 py-2 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50">
+                                Edit
+                            </a>
+
                             <form method="POST" action="{{ route('seller.products.destroy', $product) }}"
                                 onsubmit="return confirm('Hapus produk ini?')">
                                 @csrf
