@@ -116,7 +116,7 @@ Route::middleware(['auth', 'role:seller'])
         Route::get('/', [SellerDashboardController::class, 'index'])->name('dashboard');
 
         // CRUD products seller
-        Route::resource('products', SellerProductController::class)->except(['show', 'edit', 'update']);
+        Route::resource('products', SellerProductController::class)->except(['show']);
 
         // seller orders
         Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');

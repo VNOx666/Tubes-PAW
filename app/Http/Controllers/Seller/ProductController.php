@@ -34,45 +34,101 @@ class ProductController extends Controller
         return view('pages.seller.products.create');
     }
 
-public function store(Request $request)
-{
-    $data = $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'price' => ['required', 'numeric', 'min:0'],
-        'category' => ['nullable', 'string', 'max:255'],
-        'grade' => ['nullable', 'in:A,B,C'],
-        'size' => ['nullable', 'string', 'max:30'],
-        'color' => ['nullable', 'string', 'max:50'],
-        'quantity' => ['required', 'integer', 'min:1', 'max:99'],
-        'status' => ['required', 'in:active,draft,sold'],
-        'description' => ['nullable', 'string'],
-        'image' => ['nullable', 'image', 'max:2048'],
-    ]);
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'category' => ['nullable', 'string', 'max:255'],
+            'grade' => ['nullable', 'in:A,B,C'],
+            'size' => ['nullable', 'string', 'max:30'],
+            'color' => ['nullable', 'string', 'max:50'],
+            'quantity' => ['required', 'integer', 'min:1', 'max:99'],
+            'status' => ['required', 'in:active,draft,sold'],
+            'description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:2048'],
+        ]);
 
-    $data['user_id'] = auth()->id();
+        $data['user_id'] = auth()->id();
 
-    $baseSlug = Str::slug($data['name']);
-    $slug = $baseSlug;
-    $i = 1;
+        $baseSlug = Str::slug($data['name']);
+        $slug = $baseSlug;
+        $i = 1;
 
-    while (Product::where('slug', $slug)->exists()) {
-        $slug = $baseSlug . '-' . $i;
-        $i++;
+        while (Product::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $i;
+            $i++;
+        }
+
+        $data['slug'] = $slug;
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        Product::create($data);
+
+        return redirect()
+            ->route('seller.products.index')
+            ->with('status', 'Produk berhasil ditambahkan');
+    }
+    public function edit(Product $product)
+    {
+        if ($product->user_id !== auth()->id()) {
+            abort(403, 'Tidak diizinkan mengedit produk ini.');
+        }
+
+        return view('pages.seller.products.edit', compact('product'));
     }
 
-    $data['slug'] = $slug;
+    public function update(Request $request, Product $product)
+    {
+        if ($product->user_id !== auth()->id()) {
+            abort(403, 'Tidak diizinkan mengedit produk ini.');
+        }
 
-    if ($request->hasFile('image')) {
-        $data['image'] = $request->file('image')->store('products', 'public');
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'category' => ['nullable', 'string', 'max:255'],
+            'grade' => ['nullable', 'in:A,B,C'],
+            'size' => ['nullable', 'string', 'max:30'],
+            'color' => ['nullable', 'string', 'max:50'],
+            'quantity' => ['required', 'integer', 'min:1', 'max:99'],
+            'status' => ['required', 'in:active,draft,sold'],
+            'description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:2048'],
+        ]);
+
+        $baseSlug = Str::slug($data['name']);
+        $slug = $baseSlug;
+        $i = 1;
+
+        while (
+            Product::where('slug', $slug)
+                ->where('id', '!=', $product->id)
+                ->exists()
+        ) {
+            $slug = $baseSlug . '-' . $i;
+            $i++;
+        }
+
+        $data['slug'] = $slug;
+
+        if ($request->hasFile('image')) {
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $data['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        $product->update($data);
+
+        return redirect()
+            ->route('seller.products.index')
+            ->with('status', 'Produk berhasil diperbarui.');
     }
-
-    Product::create($data);
-
-    return redirect()
-        ->route('seller.products.index')
-        ->with('status', 'Produk berhasil ditambahkan');
-}
-
     /**
      * DELETE /seller/products/{product}
      */
